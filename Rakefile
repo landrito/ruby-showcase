@@ -25,7 +25,6 @@ task :gen do
 
   protoc_cmd = [
     "grpc_tools_ruby_protoc",
-    "--proto_path=api-common-protos",
     "--proto_path=protos",
     "--ruby_out=lib",
     "--grpc_out=lib",
@@ -33,15 +32,7 @@ task :gen do
     "--ruby_gapic_opt=configuration=config.yml",
     "protos/google/showcase/v1alpha3/echo.proto",
   ].join " "
+
   puts "#{protoc_cmd}"
   puts `#{protoc_cmd}`
-end
-
-desc "Build the generator since we are not releasing gems yet."
-task :build_generator do
-  Dir.chdir "gapic-generator-ruby/gapic-generator" do
-    Bundler.with_clean_env do
-      `bundle exec rake check_protos`
-    end
-  end
 end
