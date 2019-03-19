@@ -1,5 +1,7 @@
 *.gem
 *.rbc
+Gemfile.lock
+/lib
 /.config
 /coverage/
 /InstalledFiles
