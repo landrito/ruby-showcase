@@ -4,6 +4,9 @@ A sample of using gapic-generator-ruby and with gapic-showcase
 ## Usage
 
 ```sh
+# Install the generator
+bundle install
+
 # Generate the client library.
 bundle exec rake gen
 
