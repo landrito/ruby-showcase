@@ -4,12 +4,6 @@ A sample of using gapic-generator-ruby and with gapic-showcase
 ## Usage
 
 ```sh
-# Get proto dependencies.
-git submodule update --init --recursive
-
-# Build the generator.
-bundle exec rake build_generator
-
 # Generate the client library.
 bundle exec rake gen
 

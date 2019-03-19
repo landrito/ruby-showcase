@@ -2,11 +2,9 @@
 
 source "https://rubygems.org"
 
-gem "gapic-generator", path: "../gapic-generator-ruby/gapic-generator"
-gem "gapic-generator-cloud", path: "../gapic-generator-ruby/gapic-generator-cloud"
-gem "googleapis-common-protos-types",
-    github: "googleapis/common-protos-ruby",
-    branch: "annotations-prerelease"
+gem "gapic-generator", path: "vendor/gapic-generator-0.1.0"
+gem "gapic-generator-cloud", path: "vendor/gapic-generator-cloud-0.1.0"
+gem "googleapis-common-protos-types", path: "vendor/googleapis-common-protos-types-1.0.3"
 gem "google-gax", "~> 1.0"
 gem "grpc-tools", "~> 1.18"
 gem "rake", "~> 10.0"

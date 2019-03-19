@@ -14,24 +14,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-desc "Run the sample"
-task :sample do
-  require "./echo.rb"
-end
-
-desc "Generate the client library"
-task :gen do
-  Dir.mkdir("lib") unless File.exists?("lib")
-
-  protoc_cmd = [
-    "grpc_tools_ruby_protoc",
-    "--proto_path=protos",
-    "--ruby_out=lib",
-    "--grpc_out=lib",
-    "--ruby_gapic_out=lib",
-    "--ruby_gapic_opt=configuration=config.yml",
-    "protos/google/showcase/v1alpha3/echo.proto",
-  ].join " "
-  puts "#{protoc_cmd}"
-  puts `#{protoc_cmd}`
+module Google
+  module Gapic
+    module Generator
+      VERSION = "0.1.0"
+    end
+  end
 end

@@ -14,24 +14,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-desc "Run the sample"
-task :sample do
-  require "./echo.rb"
-end
+require "active_support/inflector"
 
-desc "Generate the client library"
-task :gen do
-  Dir.mkdir("lib") unless File.exists?("lib")
+module FilepathHelper
+  def ruby_file_path api
+    ruby_require(api) + ".rb"
+  end
 
-  protoc_cmd = [
-    "grpc_tools_ruby_protoc",
-    "--proto_path=protos",
-    "--ruby_out=lib",
-    "--grpc_out=lib",
-    "--ruby_gapic_out=lib",
-    "--ruby_gapic_opt=configuration=config.yml",
-    "protos/google/showcase/v1alpha3/echo.proto",
-  ].join " "
-  puts "#{protoc_cmd}"
-  puts `#{protoc_cmd}`
+  def ruby_require api
+    api.address.map(&:underscore).join("/")
+  end
 end

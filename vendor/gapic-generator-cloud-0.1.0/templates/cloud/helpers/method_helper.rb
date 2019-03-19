@@ -14,24 +14,31 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-desc "Run the sample"
-task :sample do
-  require "./echo.rb"
-end
+require "active_support/inflector"
+require_relative "method_presenter"
 
-desc "Generate the client library"
-task :gen do
-  Dir.mkdir("lib") unless File.exists?("lib")
+module MethodHelper
+  def method_presenter api, service, method
+    MethodPresenter.new api, service, method
+  end
 
-  protoc_cmd = [
-    "grpc_tools_ruby_protoc",
-    "--proto_path=protos",
-    "--ruby_out=lib",
-    "--grpc_out=lib",
-    "--ruby_gapic_out=lib",
-    "--ruby_gapic_opt=configuration=config.yml",
-    "protos/google/showcase/v1alpha3/echo.proto",
-  ].join " "
-  puts "#{protoc_cmd}"
-  puts `#{protoc_cmd}`
+  def method_name method
+    ActiveSupport::Inflector.underscore method.name
+  end
+
+  def method_ivar method
+    "@#{method_name method}"
+  end
+
+  def method_desc _method
+    "TODO"
+  end
+
+  def method_lro? method
+    method.descriptor.output_type == ".google.longrunning.Operation"
+  end
+
+  def method_streaming_bidi? method
+    method.descriptor.client_streaming && method.descriptor.server_streaming
+  end
 end

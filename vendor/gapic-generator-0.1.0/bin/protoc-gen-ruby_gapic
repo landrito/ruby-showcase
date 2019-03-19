@@ -1,3 +1,4 @@
+#!/usr/bin/env ruby
 # frozen_string_literal: true
 
 # Copyright 2018 Google LLC
@@ -14,24 +15,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-desc "Run the sample"
-task :sample do
-  require "./echo.rb"
-end
+$LOAD_PATH.unshift ::File.expand_path("../../lib", __FILE__)
+require "google/gapic/runner"
+require "google/protobuf/compiler/plugin.pb"
 
-desc "Generate the client library"
-task :gen do
-  Dir.mkdir("lib") unless File.exists?("lib")
+# Ensure that no encoding conversions are done on STDIN and STDOUT
+# since we are passing binary data back and forth. Otherwise these
+# streams will be mangled on Windows.
+STDIN.binmode
+STDOUT.binmode
 
-  protoc_cmd = [
-    "grpc_tools_ruby_protoc",
-    "--proto_path=protos",
-    "--ruby_out=lib",
-    "--grpc_out=lib",
-    "--ruby_gapic_out=lib",
-    "--ruby_gapic_opt=configuration=config.yml",
-    "protos/google/showcase/v1alpha3/echo.proto",
-  ].join " "
-  puts "#{protoc_cmd}"
-  puts `#{protoc_cmd}`
-end
+request = Google::Protobuf::Compiler::CodeGeneratorRequest.decode STDIN.read
+
+# Run the request
+response = Google::Gapic::Runner.run request
+
+STDOUT.print response.serialize
