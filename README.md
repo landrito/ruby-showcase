@@ -8,7 +8,7 @@ A sample of using gapic-generator-ruby and with gapic-showcase
 bundle install
 
 # Generate the client library.
-bundle exec rake gen
+bundle exec rake generate_client
 
 # Spin up the showcase server.
 docker run --rm -d -p 7469:7469/tcp -p 7469:7469/udp \
@@ -16,7 +16,7 @@ docker run --rm -d -p 7469:7469/tcp -p 7469:7469/udp \
   gcr.io/gapic-showcase/gapic-showcase:0.0.13
 
 # Run the sample
-bundle exec rake sample
+bundle exec rake run_sample
 
 # Stop the showcase server.
 docker stop showcase-server
