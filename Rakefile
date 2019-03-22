@@ -32,6 +32,7 @@ task :generate_client do
     "--ruby_gapic_opt=configuration=config.yml",
     "protos/google/showcase/v1alpha3/echo.proto",
   ].join " "
+
   puts "#{protoc_cmd}"
   puts `#{protoc_cmd}`
 

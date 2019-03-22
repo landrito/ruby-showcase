@@ -1,12 +1,18 @@
-# ruby-showcase
-A sample of using gapic-generator-ruby and with gapic-showcase
+# Ruby Showcase
+
+An example of using [gapic-generator-ruby](https://github.com/googleapis/gapic-generator-ruby)
+to generate a [simple API](protos/google/showcase/v1alpha3/echo.proto).
+
+## Dependencies
+
+To run this example you must install recent versions of the following:
+
+  + Ruby [install](https://www.ruby-lang.org/en/documentation/installation)
+  + Docker [install](https://docs.docker.com/install)
 
 ## Usage
 
 ```sh
-# Install the generator
-bundle install
-
 # Generate the client library.
 bundle exec rake generate_client
 
