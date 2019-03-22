@@ -15,12 +15,12 @@
 # limitations under the License.
 
 desc "Run the sample"
-task :sample do
+task :run_sample do
   require "./echo.rb"
 end
 
 desc "Generate the client library"
-task :gen do
+task :generate_client do
   Dir.mkdir("lib") unless File.exists?("lib")
 
   protoc_cmd = [
@@ -35,4 +35,10 @@ task :gen do
 
   puts "#{protoc_cmd}"
   puts `#{protoc_cmd}`
+
+  puts "Compiled 'protos/google/showcase/v1alpha3/echo.proto'. "
+  puts "  Using the protopath 'protos'."
+  puts "  Generating message classes in 'lib' with the 'ruby-out' option."
+  puts "  Generating service classes in 'lib' with the 'grpc-out' option."
+  puts "  Generating gapic library in 'lib' with the 'ruby-gapic-out' option."
 end
