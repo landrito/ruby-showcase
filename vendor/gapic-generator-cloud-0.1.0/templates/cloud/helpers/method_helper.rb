@@ -1,4 +1,3 @@
-#!/usr/bin/env ruby
 # frozen_string_literal: true
 
 # Copyright 2018 Google LLC
@@ -15,13 +14,31 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-$LOAD_PATH.unshift ::File.expand_path("../out/lib", __FILE__)
-require "google/showcase/v1alpha3/echo"
+require "active_support/inflector"
+require_relative "method_presenter"
 
-client = Google::Showcase::V1alpha3::Echo.new(
-  credentials: GRPC::Core::Channel.new(
-    "localhost:7469", nil, :this_channel_is_insecure))
+module MethodHelper
+  def method_presenter api, service, method
+    MethodPresenter.new api, service, method
+  end
 
-response = client.echo({content: 'hi there'})
+  def method_name method
+    ActiveSupport::Inflector.underscore method.name
+  end
 
-puts response.inspect
+  def method_ivar method
+    "@#{method_name method}"
+  end
+
+  def method_desc _method
+    "TODO"
+  end
+
+  def method_lro? method
+    method.descriptor.output_type == ".google.longrunning.Operation"
+  end
+
+  def method_streaming_bidi? method
+    method.descriptor.client_streaming && method.descriptor.server_streaming
+  end
+end

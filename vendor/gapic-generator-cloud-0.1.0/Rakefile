@@ -1,0 +1,108 @@
+# frozen_string_literal: true
+
+# Copyright 2018 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+require "bundler/gem_tasks"
+require "rubocop/rake_task"
+require "rake/testtask"
+
+desc "Check that the necessary protobuf files exist."
+task :check_protos do
+  Dir.chdir "../gapic-generator" do
+    Bundler.with_clean_env do
+      sh "bundle exec rake check_protos"
+    end
+  end
+end
+
+RuboCop::RakeTask.new # Configuration is in .rubocop.yml
+Rake::TestTask.new :test do |t|
+  t.libs << "test"
+  t.libs << "lib"
+  t.test_files = FileList["test/**/*_test.rb"]
+end
+Rake::Task[:test].enhance [:check_protos]
+
+desc "Run the CI build"
+task :ci do
+  puts "\nBUILDING gapic-generator-cloud\n"
+  puts "\ngapic-generator-cloud rubocop\n"
+  Rake::Task[:rubocop].invoke
+  puts "\ngapic-generator-cloud test\n"
+  Rake::Task[:test].invoke
+end
+Rake::Task[:ci].enhance [:check_protos]
+
+desc "Generate the expected output for tests"
+task :gen do
+  Rake::Task["gen:templates"].invoke
+end
+namespace :gen do
+  desc "Generate the expected output for template tests"
+  task :templates do
+    generate_cloud_templates "speech"
+    # generate_cloud_templates "vision"
+    # generate_cloud_templates "showcase"
+    # generate_default_templates "garbage"
+  end
+end
+Rake::Task[:gen].enhance [:check_protos]
+Rake::Task["gen:templates"].enhance [:check_protos]
+
+desc "Start an interactive shell."
+task :console do
+  require "irb"
+  require "irb/completion"
+  require "pp"
+
+  $LOAD_PATH.unshift "lib"
+
+  require "google/gapic/schema"
+  def schema service
+    bin_proto = File.binread "proto_input/#{service}.bin"
+    request = Google::Protobuf::Compiler::CodeGeneratorRequest.decode bin_proto
+    Google::Gapic::Schema::Api.new request
+  end
+
+  ARGV.clear
+  IRB.start
+end
+Rake::Task[:console].enhance [:check_protos]
+
+def api service
+  require "google/gapic/schema/api"
+  bin_proto = File.binread "proto_input/#{service}.bin"
+  request = Google::Protobuf::Compiler::CodeGeneratorRequest.decode bin_proto
+  Google::Gapic::Schema::Api.new request
+end
+
+def generate_cloud_templates service
+  require "fileutils"
+  require "google/gapic/generators/cloud_generator"
+
+  target_path = File.expand_path File.join("expected_output", service)
+  FileUtils.rm_rf target_path
+  FileUtils.mkdir_p target_path
+
+  api = api service
+  generator = Google::Gapic::Generators::CloudGenerator.new api
+  generator.generate.each do |file|
+    target_file_path = File.join target_path, file.name
+    FileUtils.mkdir_p File.dirname(target_file_path)
+    File.write target_file_path, file.content
+  end
+end
+
+task default: :ci

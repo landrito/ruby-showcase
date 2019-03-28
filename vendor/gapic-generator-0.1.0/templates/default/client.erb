@@ -1,0 +1,8 @@
+<%= render partial: "shared/client",
+           layout: "layouts/ruby",
+           locals: {
+             service: service,
+             api: api,
+             namespaces: service.address[0..-2]
+           }
+%>

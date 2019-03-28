@@ -13,6 +13,9 @@ To run this example you must install recent versions of the following:
 ## Usage
 
 ```sh
+# Install the generator and dependencies
+bundle install
+
 # Generate the client library.
 bundle exec rake generate_client
 

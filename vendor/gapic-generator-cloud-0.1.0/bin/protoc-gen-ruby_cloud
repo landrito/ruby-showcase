@@ -15,13 +15,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-$LOAD_PATH.unshift ::File.expand_path("../out/lib", __FILE__)
-require "google/showcase/v1alpha3/echo"
+gem "gapic-generator"
+require "google/gapic/runner"
+require "google/protobuf/compiler/plugin.pb"
 
-client = Google::Showcase::V1alpha3::Echo.new(
-  credentials: GRPC::Core::Channel.new(
-    "localhost:7469", nil, :this_channel_is_insecure))
+# Ensure that no encoding conversions are done on STDIN and STDOUT
+# since we are passing binary data back and forth. Otherwise these
+# streams will be mangled on Windows.
+STDIN.binmode
+STDOUT.binmode
 
-response = client.echo({content: 'hi there'})
+request = Google::Protobuf::Compiler::CodeGeneratorRequest.decode STDIN.read
 
-puts response.inspect
+# Run the request, specifying the cloud generator
+response = Google::Gapic::Runner.run request, generator: :cloud
+
+STDOUT.print response.serialize

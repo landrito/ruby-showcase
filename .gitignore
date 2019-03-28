@@ -1,6 +1,6 @@
 *.rbc
 Gemfile.lock
-/lib
+/out
 /.config
 /coverage/
 /InstalledFiles

@@ -2,7 +2,6 @@
 
 source "https://rubygems.org"
 
-# Add the Ruby GAPIC micro-generator to the project.
 gem "gapic-generator"
 gem "gapic-generator-cloud"
 

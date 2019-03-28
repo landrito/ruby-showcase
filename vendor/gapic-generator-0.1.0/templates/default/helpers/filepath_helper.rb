@@ -1,4 +1,3 @@
-#!/usr/bin/env ruby
 # frozen_string_literal: true
 
 # Copyright 2018 Google LLC
@@ -15,13 +14,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-$LOAD_PATH.unshift ::File.expand_path("../out/lib", __FILE__)
-require "google/showcase/v1alpha3/echo"
+require "active_support/inflector"
 
-client = Google::Showcase::V1alpha3::Echo.new(
-  credentials: GRPC::Core::Channel.new(
-    "localhost:7469", nil, :this_channel_is_insecure))
+module FilepathHelper
+  def ruby_file_path api
+    ruby_require(api) + ".rb"
+  end
 
-response = client.echo({content: 'hi there'})
-
-puts response.inspect
+  def ruby_require api
+    api.address.map(&:underscore).join("/")
+  end
+end

@@ -21,16 +21,17 @@ end
 
 desc "Generate the client library"
 task :generate_client do
-  Dir.mkdir("lib") unless File.exists?("lib")
+  FileUtils.rm_rf("out")
+  FileUtils.mkpath("out/lib")
 
   protoc_cmd = [
     "grpc_tools_ruby_protoc",
     "--proto_path=protos",
-    "--ruby_out=lib",
-    "--grpc_out=lib",
-    "--ruby_gapic_out=lib",
-    "--ruby_gapic_opt=configuration=config.yml",
-    "protos/google/showcase/v1alpha3/echo.proto",
+    "--ruby_cloud_out=out",
+    "--ruby_cloud_opt=configuration=google-showcase-config.yml",
+    "--ruby_out=out/lib",
+    "--grpc_out=out/lib",
+    "protos/google/showcase/v1alpha3/*.proto",
   ].join " "
 
   puts "#{protoc_cmd}"
